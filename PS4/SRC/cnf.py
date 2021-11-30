@@ -219,7 +219,7 @@ if __name__ == "__main__":
                  'B21',
                  'P12']
     test = ['and', 'P12', ['or', ['not', 'P12'], 'P21']]
-    testand = ['and', 'P12', ['and', ['not', 'P12'], 'P21']]
+    testand = ['or', 'P12', ['and', ['not', 'P12'], 'P21']]
     # print(orCombine(testand))
     print(repr(cnf(sentences)))
     print(repr(cnf(test)))

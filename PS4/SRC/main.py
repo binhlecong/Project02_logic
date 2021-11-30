@@ -1,6 +1,24 @@
 import cnf
 
 
+class KnowledgeBase:
+    '''
+    A KnowledgeBase for Propositional logic.
+    '''
+
+    def __init__(self, sentence=None):
+        self.clauses = []
+        self.detailsTurn = False    # print the algorithm details or not
+        if sentence:
+            self.tell(sentence)
+
+    def tell(self, sentence):
+        '''
+        Add the sentence to KnowledgeBase
+        also reduce it to smallest structure
+        '''
+
+
 def toUnique(clauses):
     '''
     return a clauses list whose elements are unique
@@ -141,9 +159,9 @@ def plResolution(kb, alpha):
                  for i in range(n) for j in range(i+1, n)]
         for (ci, cj) in pairs:
             resolvents = plResolve(ci, cj)
-            # if kb.detailsTurn:
-            #     print("After doing resolution for %s and %s we get %s" %
-            #           (ci, cj, resolvents))
+            if kb.detailsTurn:
+                print("After doing resolution for %s and %s we get %s" %
+                      (ci, cj, resolvents))
             if [] in resolvents:
                 return True
             for tempCR in resolvents:
@@ -165,11 +183,53 @@ def plResolution(kb, alpha):
         # clauses = toUnique(clauses + newList)
     pass
 
+def tTEntails(kb, alpha):
+    '''
+    returns if KB entailments alpha True or False using truth table
+    kb: KnowledgeBase
+    alpha: the result to prove
+    '''
+    clauses = kb.clauses + disCombine('and', cnf.cnf(alpha))
+    symbols = propSymbols(combine('and', clauses))
+
+    return tTCheckAll(kb, alpha, symbols, {})
+
+
+def propSymbols(clause):
+    '''
+    Return the list of all propositional symbols in cnfClause.
+    '''
+    if len(clause) == 0:
+        return []
+    elif type(clause) == str:
+        return [clause]
+    elif len(clause) <= 2:   # P or not P, just return self
+        return [clause[-1]]
+    else:
+        rtSymbols = []
+        for s in clause[1:]:
+            pI = propSymbols(s)
+            rtSymbols.extend(list(set(pI)))
+        return list(set(rtSymbols))
+
+
 
 if __name__ == "__main__":
-    # Read from input.txt
+    ''' Read from input.txt'''
 
-    # Call PL-Resolution
+    problem = ['and',
+               ['or', ['not', 'A'], 'B'],
+               ['or', ['not', 'C'], 'B'],
+               ['or', 'A', ['not', 'B'], 'C'],
+               ['not', 'B'],
+               ]
 
-    # Write to output.txt
-    pass
+    kb = KnowledgeBase()
+    kb.detailsTurn = True
+    for cl in problem[1:]:
+        kb.tell(cl)
+    alpha = ['not', 'A']
+    ''' Call PL-Resolution'''
+    print(plResolution(kb, alpha))
+
+    ''' Write to output.txt'''
