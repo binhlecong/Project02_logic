@@ -1,5 +1,6 @@
 import cnf
 
+
 def toUnique(clauses):
     '''
     return a clauses list whose elements are unique
@@ -121,31 +122,32 @@ def negativeInside(s):
         return tempRet
 
 
-def pl_resolution(kb, alpha):
+def plResolution(kb, alpha):
     '''
     returns if KB entailments alpha True or False using pl resolution
     kb: KnowledgeBase
     alpha: the result to prove
     '''
+    ''' Ket hop phu dinh alpha vao'''
     clauses = kb.clauses + disCombine('and', cnf.cnf(negativeInside(alpha)))
     # clauses = duplicateOrElemination(clauses)
     # if str(clauses) == list and len(clauses) == 0:
     #     return True
     newList = []
     while True:
-
         # subSumption(clauses)
         n = len(clauses)
         pairs = [(clauses[i], clauses[j])
                  for i in range(n) for j in range(i+1, n)]
         for (ci, cj) in pairs:
             resolvents = plResolve(ci, cj)
-            if kb.detailsTurn:
-                print("After doing resolution for %s and %s we get %s" %
-                      (ci, cj, resolvents))
+            # if kb.detailsTurn:
+            #     print("After doing resolution for %s and %s we get %s" %
+            #           (ci, cj, resolvents))
             if [] in resolvents:
                 return True
             for tempCR in resolvents:
+                ''' Bo qua cac menh de trung nhau trong 1 vong lap'''
                 if not tempCR in newList:
                     newList.append(tempCR)
             # newList = toUnique(newList + resolvents)
@@ -156,6 +158,8 @@ def pl_resolution(kb, alpha):
         if isSublistOf(newList, clauses):
             return False
         for cc in newList:
+            ''' Bo qua cac menh de trung nhau trong KB ban dau'''
+            ''' Chua bo qua cac menh de vo ich'''
             if not cc in clauses:
                 clauses.append(cc)
         # clauses = toUnique(clauses + newList)
