@@ -1,0 +1,4 @@
+1st line        - sentence alpha
+2nd line        - number of terms
+next n lines    - terms
+..... 
