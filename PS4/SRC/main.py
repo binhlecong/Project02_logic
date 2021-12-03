@@ -18,15 +18,16 @@ def main():
         kb.tell(cl)
     alpha = ['not', 'A']
     alpha='A'
-    # Call PL-Resolution
-    res, output = plResolution(kb, alpha)
+
+    # Call PL-Resolution fucntion
+    output, result = plResolution(kb, alpha)
 
     # Write to output.txt
     for loop in output:
         print(len(loop))
         for clause in loop:
             print(clause)
-    print(res)
+    print(result)
 
 
 if __name__ == "__main__":

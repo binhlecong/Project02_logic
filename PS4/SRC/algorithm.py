@@ -224,14 +224,14 @@ def plResolution(kb, alpha):
         newList = [cc for cc in newList if not orContainTautology(cc)]
         # Return result
         if isSublistOf(newList, clauses):
-            return False, output
+            return output, False
         # Insert generated clauses into clauses
         for cc in newList:
             if not cc in clauses:
                 clauses.append(cc)
         # Return result
         if [] in clauses:
-            return True, output
+            return output, True
 
 
 def isResolvable(ci, cj):
