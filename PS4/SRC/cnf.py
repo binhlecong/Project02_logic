@@ -1,12 +1,15 @@
+from const import *
+
+
 def biCondElimination(s):
     if type(s) is str:
         return s
-    elif s[0] == "iff":
-        return(["and",
-                ["if",
+    elif s[0] == IFF:
+        return([AND,
+                [IF,
                  biCondElimination(s[1]),
                  biCondElimination(s[2])],
-                ["if",
+                [IF,
                  biCondElimination(s[2]),
                  biCondElimination(s[1])]])
     else:
@@ -16,9 +19,9 @@ def biCondElimination(s):
 def impliElimination(s):
     if type(s) is str:
         return s
-    elif s[0] == "if":
-        return(["or",
-                ["not",
+    elif s[0] == IF:
+        return([OR,
+                [NOT,
                  impliElimination(s[1])],
                 impliElimination(s[2])])
     else:
@@ -28,7 +31,7 @@ def impliElimination(s):
 def twoNegElimination(s):
     if type(s) is str:
         return s
-    elif s[0] == "not" and type(s[1]) is list and s[1][0] == "not":
+    elif s[0] == NOT and type(s[1]) is list and s[1][0] == NOT:
         return(twoNegElimination(s[1][1]))
     else:
         return([s[0]] + [twoNegElimination(i) for i in s[1:]])
@@ -45,10 +48,10 @@ def demorgan(s):
 def demorgan1(s):
     if type(s) is str:
         return s
-    elif s[0] == "not" and type(s[1]) is list and s[1][0] == "and":
-        return(["or"] + [demorgan(["not", i]) for i in s[1][1:]])
-    elif s[0] == "not" and type(s[1]) is list and s[1][0] == "or":
-        return(["and"] + [demorgan(["not", i]) for i in s[1][1:]])
+    elif s[0] == NOT and type(s[1]) is list and s[1][0] == AND:
+        return([OR] + [demorgan([NOT, i]) for i in s[1][1:]])
+    elif s[0] == NOT and type(s[1]) is list and s[1][0] == OR:
+        return([AND] + [demorgan([NOT, i]) for i in s[1][1:]])
     else:
         return ([s[0]] + [demorgan(i) for i in s[1:]])
 
@@ -56,10 +59,10 @@ def demorgan1(s):
 def binaryize(s):
     if type(s) is str:
         return s
-    elif s[0] == "and" and len(s) > 3:
-        return(["and", s[1], binaryize(["and"] + s[2:])])
-    elif s[0] == "or" and len(s) > 3:
-        return(["or", s[1], binaryize(["or"] + s[2:])])
+    elif s[0] == AND and len(s) > 3:
+        return([AND, s[1], binaryize([AND] + s[2:])])
+    elif s[0] == OR and len(s) > 3:
+        return([OR, s[1], binaryize([OR] + s[2:])])
     else:
         return([s[0]] + [binaryize(i) for i in s[1:]])
 
@@ -78,12 +81,12 @@ def distribOnBi(s):
     '''
     if type(s) is str:
         return s
-    elif s[0] == "or" and type(s[1]) is list and s[1][0] == "and":
+    elif s[0] == OR and type(s[1]) is list and s[1][0] == AND:
         # distribute s[2] over s[1]
-        return(["and"] + [distrib(["or", i, s[2]]) for i in s[1][1:]])
-    elif s[0] == "or" and type(s[2]) is list and s[2][0] == "and":
+        return([AND] + [distrib([OR, i, s[2]]) for i in s[1][1:]])
+    elif s[0] == OR and type(s[2]) is list and s[2][0] == AND:
         # distribute s[1] over s[2]
-        return(["and"] + [distrib(["or", i, s[1]]) for i in s[2][1:]])
+        return([AND] + [distrib([OR, i, s[1]]) for i in s[2][1:]])
     else:
         return ([s[0]] + [distrib(i) for i in s[1:]])
 
@@ -102,10 +105,10 @@ def andCombine(s):
 def andCombine1(s):
     if type(s) is str:
         return s
-    elif s[0] == "and":
-        result = ["and"]
+    elif s[0] == AND:
+        result = [AND]
         for i in s[1:]:
-            if type(i) is list and i[0] == "and":
+            if type(i) is list and i[0] == AND:
                 result = result + i[1:]
             else:
                 result.append(i)
@@ -128,10 +131,10 @@ def orCombine(s):
 def orCombine1(s):
     if type(s) is str:
         return s
-    elif s[0] == "or":
-        result = ["or"]
+    elif s[0] == OR:
+        result = [OR]
         for i in s[1:]:
-            if type(i) is list and i[0] == "or":
+            if type(i) is list and i[0] == OR:
                 result = result + i[1:]
             else:
                 result.append(i)
@@ -143,11 +146,11 @@ def orCombine1(s):
 def duplicateLiteralsElination(s):
     if type(s) is str:
         return s
-    if s[0] == "not":
+    if s[0] == NOT:
         return s
-    if s[0] == "and":
-        return(["and"] + [duplicateLiteralsElination(i) for i in s[1:]])
-    if s[0] == "or":
+    if s[0] == AND:
+        return([AND] + [duplicateLiteralsElination(i) for i in s[1:]])
+    if s[0] == OR:
         remains = []
         for l in s[1:]:
             if l not in remains:
@@ -155,17 +158,17 @@ def duplicateLiteralsElination(s):
         if len(remains) == 1:
             return remains[0]
         else:
-            return(["or"] + remains)
+            return([OR] + remains)
 
 
 def duplicateClausesElimination(s):
     if type(s) is str:
         return s
-    if s[0] == "not":
+    if s[0] == NOT:
         return s
-    if s[0] == "or":
+    if s[0] == OR:
         return s
-    if s[0] == "and":
+    if s[0] == AND:
         remains = []
         for c in s[1:]:
             if unique(c, remains):
@@ -173,7 +176,7 @@ def duplicateClausesElimination(s):
         if len(remains) == 1:
             return remains[0]
         else:
-            return(["and"] + remains)
+            return([AND] + remains)
 
 
 def unique(c, remains):
@@ -211,15 +214,15 @@ def cnf(s):
 
 if __name__ == "__main__":
 
-    sentences = ['and',
-                 ['not', 'P11'],
-                 ['iff', 'B11', ['or', 'P12', 'P21']],
-                 ['iff', 'B21', ['or', 'P11', 'P22', 'P31']],
-                 ['not', 'B11'],
+    sentences = [AND,
+                 [NOT, 'P11'],
+                 [IFF, 'B11', [OR, 'P12', 'P21']],
+                 [IFF, 'B21', [OR, 'P11', 'P22', 'P31']],
+                 [NOT, 'B11'],
                  'B21',
                  'P12']
-    test = ['and', 'P12', ['or', ['not', 'P12'], 'P21']]
-    testand = ['or', 'P12', ['and', ['not', 'P12'], 'P21']]
+    test = [AND, 'P12', [OR, [NOT, 'P12'], 'P21']]
+    testand = [OR, 'P12', [AND, [NOT, 'P12'], 'P21']]
     # print(orCombine(testand))
     print(repr(cnf(sentences)))
     print(repr(cnf(test)))

@@ -1,23 +1,23 @@
 from algorithm import *
 from file_io import *
+from const import *
 
 
 def main():
     '''Main function'''
     # Read from input.txt
-    problem = ['and',
-               ['or', ['not', 'A'], 'B'],
-               ['or', 'B', ['not', 'C']],
-               ['or', 'A', ['not', 'B'], 'C'],
-               ['not', 'B'],
+    problem = [AND,
+               [OR, [NOT, 'A'], 'B'],
+               [OR, 'B', [NOT, 'C']],
+               [OR, 'A', [NOT, 'B'], 'C'],
+               [NOT, 'B'],
                ]
 
     kb = KnowledgeBase()
     kb.detailsTurn = True
     for cl in problem[1:]:
         kb.tell(cl)
-    alpha = ['not', 'A']
-    alpha='A'
+    alpha = 'A'
 
     # Call PL-Resolution fucntion
     output, result = plResolution(kb, alpha)

@@ -1,6 +1,6 @@
 import random
 import cnf
-import time
+from const import *
 
 
 class KnowledgeBase:
@@ -19,7 +19,7 @@ class KnowledgeBase:
         Add the sentence to KnowledgeBase
         also reduce it to smallest structure
         '''
-        self.clauses.extend(disCombine('and', cnf.cnf(sentence)))
+        self.clauses.extend(disCombine(AND, cnf.cnf(sentence)))
 
 # ______________________________________________________________________________
 # Truth table enumeration method
@@ -33,10 +33,10 @@ def combine(op, elements):
         return elements
     elif len(elements) == 1:
         return elements[0]
-    elif op == 'and':
-        return ['and'] + elements
-    elif op == 'or':
-        return ['or'] + elements
+    elif op == AND:
+        return [AND] + elements
+    elif op == OR:
+        return [OR] + elements
 
 
 def disCombine(op, clause):
@@ -60,8 +60,8 @@ def tTEntails(kb, alpha):
     kb: KnowledgeBase
     alpha: the result to prove
     '''
-    clauses = kb.clauses + disCombine('and', cnf.cnf(alpha))
-    symbols = propSymbols(combine('and', clauses))
+    clauses = kb.clauses + disCombine(AND, cnf.cnf(alpha))
+    symbols = propSymbols(combine(AND, clauses))
 
     return tTCheckAll(kb, alpha, symbols, {})
 
@@ -85,7 +85,7 @@ def tTCheckAll(kb, alpha, symbols, model):
         # global call_times
         # print("call_times:", call_times)
         # call_times+=1
-        if plTrue(cnf.cnf(combine('and', kb.clauses)), model):
+        if plTrue(cnf.cnf(combine(AND, kb.clauses)), model):
             return plTrue(alphaCnf, model)
         else:
             return True     # when KB is false, always return True
@@ -104,16 +104,16 @@ def plTrue(clause, model={}):
     if type(clause) == str:
         return model[clause]
     elif len(clause) >= 2:   # must be the type of list
-        if clause[0] == 'not':
+        if clause[0] == NOT:
             return not plTrue(clause[1], model)
-        elif clause[0] == 'and':
-            clauseRest = combine('and', clause[2:])
-            if len(clauseRest) == 0:    # if operation is 'and', remove the influence of []
+        elif clause[0] == AND:
+            clauseRest = combine(AND, clause[2:])
+            if len(clauseRest) == 0:    # if operation is AND, remove the influence of []
                 return plTrue(clause[1], model)
             else:
                 return plTrue(clause[1], model) and plTrue(clauseRest, model)
-        elif clause[0] == 'or':
-            clauseRest = combine('or', clause[2:])
+        elif clause[0] == OR:
+            clauseRest = combine(OR, clause[2:])
             if len(clauseRest) == 0:
                 return plTrue(clause[1], model)
             else:
@@ -153,7 +153,7 @@ def modelExtend(model, p, v):
 def duplicateOrElemination(clauses):
     '''
     Eleminate the duplicate item in or clause
-    eg: ['or', 'P', ['not', 'P']] return []
+    eg: [OR, 'P', [NOT, 'P']] return []
     '''
     if type(clauses) == str or len(clauses) <= 1:
         return clauses
@@ -167,7 +167,7 @@ def duplicateOrElemination(clauses):
 def orContainTautology(clause):
     '''
     return if the or clause contain the tautology
-    eg: ['P', ['not', 'P']]
+    eg: ['P', [NOT, 'P']]
     '''
     if type(clause) == str or len(clause) <= 1:
         return False
@@ -181,7 +181,7 @@ def orContainTautology(clause):
 def subSumption(clauses):
     '''
     return if the or clause contain the tautology
-    eg: ['P', ['and', 'P', "Q"]] return ['P']
+    eg: ['P', [AND, 'P', "Q"]] return ['P']
     '''
     unitClauses = [item for item in clauses if type(
         item) == str or (type(item) == list) and len(item) == 2]
@@ -190,7 +190,7 @@ def subSumption(clauses):
     for cc in clauses:
         for unitC in unitClauses:
             if type(cc) == list and len(cc) > 2:
-                if unitC in disCombine('or', cc) and cc in clauses:
+                if unitC in disCombine(OR, cc) and cc in clauses:
                     clauses.remove(cc)
     print("After sub:", clauses)
 
@@ -201,7 +201,7 @@ def plResolution(kb, alpha):
     kb: KnowledgeBase
     alpha: the result to prove
     '''
-    clauses = kb.clauses + disCombine('and', cnf.cnf(negativeInside(alpha)))
+    clauses = kb.clauses + disCombine(AND, cnf.cnf(negativeInside(alpha)))
     newList = []
     output = []
     while True:
@@ -239,8 +239,8 @@ def isResolvable(ci, cj):
     Check if 2 clauses are worth resolving according to the assignment 
     '''
     cnt = 0
-    for di in disCombine('or', ci):
-        for dj in disCombine('or', cj):
+    for di in disCombine(OR, ci):
+        for dj in disCombine(OR, cj):
             if di == negativeInside(dj) or negativeInside(di) == dj:
                 cnt += 1
     return cnt == 1
@@ -251,19 +251,19 @@ def plResolve(ci, cj):
     Returns all clauses that can be obtained from clauses ci and cj
     '''
     clauses = []
-    for di in disCombine('or', ci):
-        for dj in disCombine('or', cj):
+    for di in disCombine(OR, ci):
+        for dj in disCombine(OR, cj):
             if di == negativeInside(dj) or negativeInside(di) == dj:
 
-                diNew = disCombine('or', ci)
+                diNew = disCombine(OR, ci)
                 diNew.remove(di)
-                djNew = disCombine('or', cj)
+                djNew = disCombine(OR, cj)
                 djNew.remove(dj)
 
                 dNew = diNew + djNew
                 dNew = toUnique(dNew)
 
-                toAddD = combine('or', dNew)
+                toAddD = combine(OR, dNew)
                 # Keep the literals in alphabetical order
                 sortClause(toAddD)
                 # Add the clauses to the result
@@ -305,16 +305,16 @@ def negativeInside(s):
     move negation sign inside s
     '''
     if type(s) == str:
-        return ['not', s]
-    elif s[0] == 'not':
+        return [NOT, s]
+    elif s[0] == NOT:
         return s[1]
-    elif s[0] == 'and':
-        tempRet = ['or']
+    elif s[0] == AND:
+        tempRet = [OR]
         for element in s[1:]:
             tempRet.append(negativeInside(element))
         return tempRet
-    elif s[0] == 'or':
-        tempRet = ['and']
+    elif s[0] == OR:
+        tempRet = [AND]
         for element in s[1:]:
             tempRet.append(negativeInside(element))
         return tempRet
@@ -361,7 +361,7 @@ def walkSAT(clauses, p=0.5, maxFlips=10000):
     p: the probability of flipping the value of the symbol
     maxFlip: maximum flipping time
     '''
-    symbols = propSymbols(combine('and', clauses))
+    symbols = propSymbols(combine(AND, clauses))
     print("symbols: ", symbols)
 
     model = {s: random.choice([True, False]) for s in symbols}
@@ -395,13 +395,13 @@ def walkSAT(clauses, p=0.5, maxFlips=10000):
 if __name__ == "__main__":
     ''' Testing '''
 
-    problem1 = ['and',
-                ['or', ['not', 'A'], 'B'],
-                ['or', ['not', 'C'], 'B'],
-                ['or', 'A', ['not', 'B'], 'C'],
-                ['not', 'B'],
+    problem1 = [AND,
+                [OR, [NOT, 'A'], 'B'],
+                [OR, [NOT, 'C'], 'B'],
+                [OR, 'A', [NOT, 'B'], 'C'],
+                [NOT, 'B'],
                 ]
-    alpha = ['not', 'A']
+    alpha = [NOT, 'A']
     # alpha = 'A'
 
     kb = KnowledgeBase()
