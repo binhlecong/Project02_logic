@@ -7,7 +7,7 @@ def main():
     # Read from input.txt
     problem = ['and',
                ['or', ['not', 'A'], 'B'],
-               ['or', ['not', 'C'], 'B'],
+               ['or', 'B', ['not', 'C']],
                ['or', 'A', ['not', 'B'], 'C'],
                ['not', 'B'],
                ]

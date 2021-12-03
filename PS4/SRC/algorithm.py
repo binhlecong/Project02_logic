@@ -207,24 +207,32 @@ def plResolution(kb, alpha):
     #     return True
     newList = []
     while True:
-
         # subSumption(clauses)
         n = len(clauses)
         pairs = [(clauses[i], clauses[j])
                  for i in range(n) for j in range(i+1, n)]
+        tmpList = []
         for (ci, cj) in pairs:
-            resolvents = plResolve(ci, cj)
-            if kb.detailsTurn:
-                print("After doing resolution for %s and %s we get %s" %
-                      (ci, cj, resolvents))
-            if [] in resolvents:
-                return True
-            for tempCR in resolvents:
-                if not tempCR in newList:
-                    newList.append(tempCR)
-            # newList = toUnique(newList + resolvents)
-        #     print("newList:", newList)
-        # print("clauses:", clauses)
+            if isResolvable(ci, cj):
+                resolvents = plResolve(ci, cj)
+                # if kb.detailsTurn:
+                #   print("After doing resolution for %s and %s we get %s" % (ci, cj, resolvents))
+                if [] in resolvents:
+                    if len(tmpList) > 0:
+                        print(len(tmpList))
+                        for clause in tmpList:
+                            print(clause)
+                    print('YES')
+                    return True
+                for tempCR in resolvents:
+                    if not tempCR in clauses:
+                        newList.append(tempCR)
+                        tmpList.append(tempCR)
+        if len(tmpList) > 0:
+            print(len(tmpList))
+            for clause in tmpList:
+                print(clause)
+
         newList = [cc for cc in newList if not orContainTautology(cc)]
         # subSumption(newList)
         if isSublistOf(newList, clauses):
@@ -233,6 +241,15 @@ def plResolution(kb, alpha):
             if not cc in clauses:
                 clauses.append(cc)
         # clauses = toUnique(clauses + newList)
+
+
+def isResolvable(ci, cj):
+    cnt = 0
+    for di in disCombine('or', ci):
+        for dj in disCombine('or', cj):
+            if di == negativeInside(dj) or negativeInside(di) == dj:
+                cnt += 1
+    return cnt == 1
 
 
 gloVar = 0  # used to compute the excute times
