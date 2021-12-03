@@ -202,9 +202,6 @@ def plResolution(kb, alpha):
     alpha: the result to prove
     '''
     clauses = kb.clauses + disCombine('and', cnf.cnf(negativeInside(alpha)))
-    # clauses = duplicateOrElemination(clauses)
-    # if str(clauses) == list and len(clauses) == 0:
-    #     return True
     newList = []
     while True:
         # subSumption(clauses)
@@ -219,7 +216,6 @@ def plResolution(kb, alpha):
                 #   print("After doing resolution for %s and %s we get %s" % (ci, cj, resolvents))
                 for tempCR in resolvents:
                     if not tempCR in clauses and not tempCR in newList:
-                        #print('>',clauses)
                         newList.append(tempCR)
                         tmpList.append(tempCR)
         # Write into file
@@ -230,8 +226,8 @@ def plResolution(kb, alpha):
         # After checking each pair
         newList = [cc for cc in newList if not orContainTautology(cc)]
         # Return result
-        if isSublistOf(newList, clauses):
-            return False
+        # if isSublistOf(newList, clauses):
+        #     return False
         # Insert generated clauses into clauses
         for cc in newList:
             if not cc in clauses:
@@ -242,6 +238,9 @@ def plResolution(kb, alpha):
 
 
 def isResolvable(ci, cj):
+    '''
+    Check if 2 clauses are worth resolving according to the assignment 
+    '''
     cnt = 0
     for di in disCombine('or', ci):
         for dj in disCombine('or', cj):
@@ -249,9 +248,10 @@ def isResolvable(ci, cj):
                 cnt += 1
     return cnt == 1
 
+
 def plResolve(ci, cj):
     '''
-    returns all clauses that can be obtained from clauses ci and cj
+    Returns all clauses that can be obtained from clauses ci and cj
     '''
     clauses = []
     for di in disCombine('or', ci):
@@ -262,16 +262,45 @@ def plResolve(ci, cj):
                 diNew.remove(di)
                 djNew = disCombine('or', cj)
                 djNew.remove(dj)
-                
+
                 dNew = diNew + djNew
                 dNew = toUnique(dNew)
-                
-                toAddD = combine('or', dNew)
 
+                toAddD = combine('or', dNew)
+                # Keep the literals in alphabetical order
+                sortClause(toAddD)
+                # Add the clauses to the result
                 clauses.append(toAddD)
-    # Sort literals in alpahbetical order with bubble sort
-    
     return clauses
+
+
+def sortClause(clause):
+    '''
+    Return clause in alphabetical order
+    '''
+    for i in range(1, len(clause)):
+        # Turn flag off
+        swapped = False
+        # loop to compare array elements
+        for j in range(1, len(clause) - i):
+            # compare two adjacent elements
+            # change > to < to sort in descending order
+            valueOfJ = clause[j] if isinstance(
+                clause[j], str) else clause[j][1]
+            valueOfJ_1 = clause[j + 1] if isinstance(
+                clause[j + 1], str) else clause[j + 1][1]
+
+            #print(valueOfJ, valueOfJ_1)
+            if valueOfJ > valueOfJ_1:
+                # Swap elements
+                temp = clause[j]
+                clause[j] = clause[j + 1]
+                clause[j + 1] = temp
+                # Turn flag on
+                swapped = True
+        # Stop algorithm when there were no sort
+        if not swapped:
+            break
 
 
 def negativeInside(s):
