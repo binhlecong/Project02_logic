@@ -19,9 +19,14 @@ def main():
     alpha = ['not', 'A']
     alpha='A'
     # Call PL-Resolution
-    print('YES' if plResolution(kb, alpha) else 'NO')
+    res, output = plResolution(kb, alpha)
 
     # Write to output.txt
+    for loop in output:
+        print(len(loop))
+        for clause in loop:
+            print(clause)
+    print(res)
 
 
 if __name__ == "__main__":

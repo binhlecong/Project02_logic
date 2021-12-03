@@ -203,6 +203,7 @@ def plResolution(kb, alpha):
     '''
     clauses = kb.clauses + disCombine('and', cnf.cnf(negativeInside(alpha)))
     newList = []
+    output = []
     while True:
         # subSumption(clauses)
         n = len(clauses)
@@ -212,29 +213,25 @@ def plResolution(kb, alpha):
         for (ci, cj) in pairs:
             if isResolvable(ci, cj):
                 resolvents = plResolve(ci, cj)
-                # if kb.detailsTurn:
-                #   print("After doing resolution for %s and %s we get %s" % (ci, cj, resolvents))
+                # 
                 for tempCR in resolvents:
                     if not tempCR in clauses and not tempCR in newList:
                         newList.append(tempCR)
                         tmpList.append(tempCR)
-        # Write into file
-        if len(tmpList) > 0:
-            print(len(tmpList))
-            for clause in tmpList:
-                print(clause)
-        # After checking each pair
+        # Add clauses of this loop to the output
+        output.append(tmpList)
+        # Remove tautology
         newList = [cc for cc in newList if not orContainTautology(cc)]
         # Return result
         if isSublistOf(newList, clauses):
-            return False
+            return False, output
         # Insert generated clauses into clauses
         for cc in newList:
             if not cc in clauses:
                 clauses.append(cc)
         # Return result
         if [] in clauses:
-            return True
+            return True, output
 
 
 def isResolvable(ci, cj):
