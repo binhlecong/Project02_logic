@@ -17,7 +17,7 @@ def main():
     for cl in problem[1:]:
         kb.tell(cl)
     alpha = ['not', 'A']
-
+    alpha='A'
     # Call PL-Resolution
     print('YES' if plResolution(kb, alpha) else 'NO')
 

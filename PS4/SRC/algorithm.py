@@ -218,7 +218,8 @@ def plResolution(kb, alpha):
                 # if kb.detailsTurn:
                 #   print("After doing resolution for %s and %s we get %s" % (ci, cj, resolvents))
                 for tempCR in resolvents:
-                    if not tempCR in clauses:
+                    if not tempCR in clauses and not tempCR in newList:
+                        #print('>',clauses)
                         newList.append(tempCR)
                         tmpList.append(tempCR)
         # Write into file
@@ -239,6 +240,7 @@ def plResolution(kb, alpha):
         if [] in clauses:
             return True
 
+
 def isResolvable(ci, cj):
     cnt = 0
     for di in disCombine('or', ci):
@@ -246,10 +248,6 @@ def isResolvable(ci, cj):
             if di == negativeInside(dj) or negativeInside(di) == dj:
                 cnt += 1
     return cnt == 1
-
-
-gloVar = 0  # used to compute the excute times
-
 
 def plResolve(ci, cj):
     '''
@@ -259,23 +257,20 @@ def plResolve(ci, cj):
     for di in disCombine('or', ci):
         for dj in disCombine('or', cj):
             if di == negativeInside(dj) or negativeInside(di) == dj:
-                # global gloVar
-                # if gloVar % 10 == 0:
-                #     print("times: ", gloVar)
-                #     print("ci is %s, and cj is %s" % (ci, cj))
-                # gloVar += 1
+
                 diNew = disCombine('or', ci)
                 diNew.remove(di)
                 djNew = disCombine('or', cj)
                 djNew.remove(dj)
-                # print("diNew:", diNew)
-                # print("djNew:", djNew)
+                
                 dNew = diNew + djNew
                 dNew = toUnique(dNew)
-                # print("dNew:", dNew)
+                
                 toAddD = combine('or', dNew)
-                # print("toAddD:", toAddD)
+
                 clauses.append(toAddD)
+    # Sort literals in alpahbetical order with bubble sort
+    
     return clauses
 
 
