@@ -226,8 +226,8 @@ def plResolution(kb, alpha):
         # After checking each pair
         newList = [cc for cc in newList if not orContainTautology(cc)]
         # Return result
-        # if isSublistOf(newList, clauses):
-        #     return False
+        if isSublistOf(newList, clauses):
+            return False
         # Insert generated clauses into clauses
         for cc in newList:
             if not cc in clauses:
