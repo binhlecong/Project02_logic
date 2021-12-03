@@ -19,7 +19,7 @@ def main():
     alpha = ['not', 'A']
 
     # Call PL-Resolution
-    print(plResolution(kb, alpha))
+    print('YES' if plResolution(kb, alpha) else 'NO')
 
     # Write to output.txt
 

@@ -217,31 +217,27 @@ def plResolution(kb, alpha):
                 resolvents = plResolve(ci, cj)
                 # if kb.detailsTurn:
                 #   print("After doing resolution for %s and %s we get %s" % (ci, cj, resolvents))
-                if [] in resolvents:
-                    if len(tmpList) > 0:
-                        print(len(tmpList))
-                        for clause in tmpList:
-                            print(clause)
-                    print('YES')
-                    return True
                 for tempCR in resolvents:
                     if not tempCR in clauses:
                         newList.append(tempCR)
                         tmpList.append(tempCR)
+        # Write into file
         if len(tmpList) > 0:
             print(len(tmpList))
             for clause in tmpList:
                 print(clause)
-
+        # After checking each pair
         newList = [cc for cc in newList if not orContainTautology(cc)]
-        # subSumption(newList)
+        # Return result
         if isSublistOf(newList, clauses):
             return False
+        # Insert generated clauses into clauses
         for cc in newList:
             if not cc in clauses:
                 clauses.append(cc)
-        # clauses = toUnique(clauses + newList)
-
+        # Return result
+        if [] in clauses:
+            return True
 
 def isResolvable(ci, cj):
     cnt = 0
