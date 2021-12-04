@@ -8,19 +8,19 @@ def main():
     # Read from input.txt
     alpha = 'A'
     problem = [AND,
-               'A',
-               [OR, 'B', 'C', [NOT, 'B'], [NOT, 'C']],
-               [OR, 'X', 'Y', 'Z'],
-               [NOT, 'A'],
+               [OR, [NOT, 'A'], 'B'],
+               [OR, 'B', [NOT, 'C']],
+               [OR, 'A', [NOT, 'B'], 'C'],
+               [NOT, 'B'],
                ]
 
-    alpha = [OR, 'B', [NOT, 'B']]
-    problem = [AND,
-               'A',
-               [OR, 'B', 'C', [NOT, 'B'], [NOT, 'C']],
-               [OR, 'X', 'Y', 'Z'],
-               [NOT, 'A'],
-               ]
+    # alpha = [OR, 'B', [NOT, 'B']]
+    # problem = [AND,
+    #            'A',
+    #            [OR, 'B', 'C', [NOT, 'B'], [NOT, 'C']],
+    #            [OR, 'X', 'Y', 'Z'],
+    #            [NOT, 'A'],
+    #            ]
 
     kb = KnowledgeBase()
     kb.detailsTurn = True
