@@ -5,33 +5,13 @@ from const import *
 
 def main():
     '''Main function'''
-    # Read from input.txt
-    alpha = 'A'
-    problem = [AND,
-               [OR,  'B', [NOT, 'A']],
-               [OR, 'B', [NOT, 'C']],
-               [OR, 'C', [NOT, 'B'], 'A'],
-               [NOT, 'B'],
-               ]
-
-    # alpha = [OR, 'B', [NOT, 'B']]
-    # problem = [AND,
-    #            'A',
-    #            [OR, 'B', 'C', [NOT, 'B'], [NOT, 'C']],
-    #            [OR, 'X', 'Y', 'Z'],
-    #            [NOT, 'A'],
-    #            ]
-
-    kb = KnowledgeBase()
-    kb.detailsTurn = True
-    for cl in problem[1:]:
-        kb.tell(cl)
-
-    # Call PL-Resolution fucntion
-    output, result = plResolution(kb, alpha)
-
-    # Write to output.txt
-    write_file('output/output.txt', output, result)
+    for i in range(1, 6):
+        # Read from input_.txt
+        alpha, kb = read_file('input/input{}.txt'.format(str(i)))
+        # Call PL-Resolution fucntion
+        output, result = plResolution(kb, alpha)
+        # Write to output_.txt
+        write_file('output/output{}.txt'.format(str(i)), output, result)
 
 
 if __name__ == "__main__":

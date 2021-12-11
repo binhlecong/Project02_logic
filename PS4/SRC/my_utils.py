@@ -1,3 +1,6 @@
+from const import OR
+
+
 def sortClause(clause):
     '''
     Return clause in alphabetical order
@@ -24,3 +27,28 @@ def sortClause(clause):
         # Stop algorithm when there were no sort
         if not swapped:
             break
+
+
+def struct_to_str(line):
+    ans = ''
+    if isinstance(line, list):
+        if len(line) > 0:
+            if line[0] == OR:
+                for literal in line[1:]:
+                    ans += literal_to_str(literal)
+                    ans += ' '
+                    ans += OR
+                    ans += ' '
+                ans = ans[:-4]
+                return ans
+            else:
+                literal_to_str(line)
+        else:
+            return '{}'
+    return literal_to_str(line)
+
+
+def literal_to_str(literal):
+    if isinstance(literal, str):
+        return literal
+    return '-' + literal[1]

@@ -1,5 +1,5 @@
 import os
-from typing import Literal
+from algorithm import KnowledgeBase
 from my_utils import *
 from const import AND, NOT, OR
 
@@ -18,7 +18,12 @@ def read_file(filepath):
         kb.append(str_to_struct(line))
     # Close file
     file.close()
-    return alpha, kb
+    # Create a KnowledgeBase from list
+    knowledgeBase = KnowledgeBase()
+    knowledgeBase.detailsTurn = True
+    for cl in kb[1:]:
+        knowledgeBase.tell(cl)
+    return alpha, knowledgeBase
 
 
 def str_to_struct(str):
@@ -41,31 +46,6 @@ def str_to_struct(str):
     for literal in literals:
         ans.append(literal)
     return ans
-
-
-def struct_to_str(line):
-    ans = ''
-    if isinstance(line, list):
-        if len(line) > 0:
-            if line[0] == OR:
-                for literal in line[1:]:
-                    ans += literal_to_str(literal)
-                    ans += ' '
-                    ans += OR
-                    ans += ' '
-                ans = ans[:-4]
-                return ans
-            else:
-                literal_to_str(line)
-        else:
-            return '{}'
-    return literal_to_str(line)
-
-
-def literal_to_str(literal):
-    if isinstance(literal, str):
-        return literal
-    return '-' + literal[1]
 
 
 def write_file(filepath, output, result):
