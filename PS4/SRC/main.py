@@ -8,9 +8,9 @@ def main():
     # Read from input.txt
     alpha = 'A'
     problem = [AND,
-               [OR, [NOT, 'A'], 'B'],
+               [OR,  'B', [NOT, 'A']],
                [OR, 'B', [NOT, 'C']],
-               [OR, 'A', [NOT, 'B'], 'C'],
+               [OR, 'C', [NOT, 'B'], 'A'],
                [NOT, 'B'],
                ]
 

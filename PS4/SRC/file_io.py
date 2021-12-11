@@ -1,4 +1,5 @@
 import os
+from typing import Literal
 from my_utils import *
 from const import AND, NOT, OR
 
@@ -42,9 +43,29 @@ def str_to_struct(str):
     return ans
 
 
-def struct_to_str(a):
-    return 'rferf'
-    pass
+def struct_to_str(line):
+    ans = ''
+    if isinstance(line, list):
+        if len(line) > 0:
+            if line[0] == OR:
+                for literal in line[1:]:
+                    ans += literal_to_str(literal)
+                    ans += ' '
+                    ans += OR
+                    ans += ' '
+                ans = ans[:-4]
+                return ans
+            else:
+                literal_to_str(line)
+        else:
+            return '{}'
+    return literal_to_str(line)
+
+
+def literal_to_str(literal):
+    if isinstance(literal, str):
+        return literal
+    return '-' + literal[1]
 
 
 def write_file(filepath, output, result):
