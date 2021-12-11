@@ -10,13 +10,12 @@ def sortClause(clause):
         swapped = False
         # loop to compare array elements
         for j in range(1, len(clause) - i):
-            # compare two adjacent elements
-            # change > to < to sort in descending order
+            # Extract name of literals
             valueOfJ = clause[j] if isinstance(
                 clause[j], str) else clause[j][1]
             valueOfJ_1 = clause[j + 1] if isinstance(
                 clause[j + 1], str) else clause[j + 1][1]
-
+            # Compare two adjacent elements
             if valueOfJ > valueOfJ_1:
                 # Swap elements
                 temp = clause[j]
@@ -36,16 +35,14 @@ def struct_to_str(line):
             if line[0] == OR:
                 for literal in line[1:]:
                     ans += literal_to_str(literal)
-                    ans += ' '
-                    ans += OR
-                    ans += ' '
+                    ans += ' {} '.format(OR)
                 ans = ans[:-4]
                 return ans
             else:
-                literal_to_str(line)
+                return '-' + line[1]
         else:
             return '{}'
-    return literal_to_str(line)
+    return line
 
 
 def literal_to_str(literal):
