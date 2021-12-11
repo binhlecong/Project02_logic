@@ -31,11 +31,7 @@ def main():
     output, result = plResolution(kb, alpha)
 
     # Write to output.txt
-    for loop in output:
-        print(len(loop))
-        for clause in loop:
-            print(clause)
-    print(result)
+    write_file('output/output.txt', output, result)
 
 
 if __name__ == "__main__":
