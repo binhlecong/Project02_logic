@@ -1,4 +1,4 @@
-from const import OR
+from const import NOT, OR
 
 
 def sortClause(clause):
@@ -11,10 +11,15 @@ def sortClause(clause):
         # loop to compare array elements
         for j in range(1, len(clause) - i):
             # Extract name of literals
-            valueOfJ = clause[j] if isinstance(
-                clause[j], str) else clause[j][1]
-            valueOfJ_1 = clause[j + 1] if isinstance(
-                clause[j + 1], str) else clause[j + 1][1]
+            if type(clause[j]) == str:
+                valueOfJ = clause[j]
+            else:
+                valueOfJ = clause[j][1]
+
+            if type(clause[j + 1]) == str:
+                valueOfJ_1 = clause[j + 1]
+            else:
+                valueOfJ_1 = clause[j + 1][1]
             # Compare two adjacent elements
             if valueOfJ > valueOfJ_1:
                 # Swap elements
@@ -28,9 +33,37 @@ def sortClause(clause):
             break
 
 
+def str_to_struct(str):
+    if len(str.split(OR)) == 1:
+        if '-' in str:
+            return [NOT, str
+                    .replace('-', '')
+                    .replace(' ', '')
+                    .replace('\n', '')]
+        else:
+            return str.replace(' ', '').replace('\n', '')
+    # EXtract literal from input
+    literals = str.split(OR)
+    for index in range(len(literals)):
+        if '-' in literals[index]:
+            literals[index] = [NOT, literals[index]
+                               .replace(' ', '')
+                               .replace('\n', '')
+                               .replace('-', '')]
+        else:
+            literals[index] = (literals[index]
+                               .replace(' ', '')
+                               .replace('\n', ''))
+    # Sort literal before return
+    ans = [OR]
+    for literal in literals:
+        ans.append(literal)
+    return ans
+
+
 def struct_to_str(line):
     ans = ''
-    if isinstance(line, list):
+    if type(line) == list:
         if len(line) > 0:
             if line[0] == OR:
                 for literal in line[1:]:
@@ -46,6 +79,6 @@ def struct_to_str(line):
 
 
 def literal_to_str(literal):
-    if isinstance(literal, str):
+    if type(literal) == str:
         return literal
     return '-' + literal[1]

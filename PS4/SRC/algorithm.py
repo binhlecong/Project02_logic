@@ -5,9 +5,7 @@ from const import *
 
 
 class KnowledgeBase:
-    '''
-    A KnowledgeBase for Propositional logic.
-    '''
+    '''KnowledgeBase class'''
 
     def __init__(self, sentence=None):
         self.clauses = []
@@ -22,14 +20,9 @@ class KnowledgeBase:
         '''
         self.clauses.extend(disCombine(AND, cnf.cnf(sentence)))
 
-# ______________________________________________________________________________
-# Truth table enumeration method
-
 
 def combine(op, elements):
-    '''
-    return the combination of elements using operation op
-    '''
+    '''Return the combination of elements using operation op'''
     if len(elements) == 0:
         return elements
     elif len(elements) == 1:
@@ -41,9 +34,7 @@ def combine(op, elements):
 
 
 def disCombine(op, clause):
-    '''
-    return the discombination(list) of clause using operation op
-    '''
+    '''Return the discombination(list) of clause using operation op'''
     result = []
     if type(clause) == str:
         return [clause]
@@ -53,116 +44,6 @@ def disCombine(op, clause):
         return clause[1:]
     else:
         return [clause]
-
-
-def tTEntails(kb, alpha):
-    '''
-    returns if KB entailments alpha True or False using truth table
-    kb: KnowledgeBase
-    alpha: the result to prove
-    '''
-    clauses = kb.clauses + disCombine(AND, cnf.cnf(alpha))
-    symbols = propSymbols(combine(AND, clauses))
-
-    return tTCheckAll(kb, alpha, symbols, {})
-
-
-call_times = 0
-
-
-def tTCheckAll(kb, alpha, symbols, model):
-    '''
-    help to implement tTEntails
-    model is a dictionary such as {'P': True, "Q": False}
-    '''
-
-    if len(symbols) == 0:
-        alphaCnf = cnf.cnf(alpha)
-        # print("kb:", kb.clauses)
-        if kb.detailsTurn:
-            print("model:", model)
-            print("result:", plTrue(alphaCnf, model))
-        # print("\n")
-        # global call_times
-        # print("call_times:", call_times)
-        # call_times+=1
-        if plTrue(cnf.cnf(combine(AND, kb.clauses)), model):
-            return plTrue(alphaCnf, model)
-        else:
-            return True     # when KB is false, always return True
-    else:
-        p, rest = symbols[0], symbols[1:]
-        return (tTCheckAll(kb, alpha, rest, modelExtend(model, p, True)) and tTCheckAll(kb, alpha, rest, modelExtend(model, p, False)))
-
-
-def plTrue(clause, model={}):
-    '''
-    Return True if the clause is true in the model, and False if it is false.
-    Return None if the model does not specify all symbols
-    '''
-    assert len(model) > 0, 'the length of model should be more than 0'
-    assert len(clause) > 0, 'the length of clause should be more than 0'
-    if type(clause) == str:
-        return model[clause]
-    elif len(clause) >= 2:   # must be the type of list
-        if clause[0] == NOT:
-            return not plTrue(clause[1], model)
-        elif clause[0] == AND:
-            clauseRest = combine(AND, clause[2:])
-            if len(clauseRest) == 0:    # if operation is AND, remove the influence of []
-                return plTrue(clause[1], model)
-            else:
-                return plTrue(clause[1], model) and plTrue(clauseRest, model)
-        elif clause[0] == OR:
-            clauseRest = combine(OR, clause[2:])
-            if len(clauseRest) == 0:
-                return plTrue(clause[1], model)
-            else:
-                return plTrue(clause[1], model) or plTrue(clauseRest, model)
-
-
-def propSymbols(clause):
-    '''
-    Return the list of all propositional symbols in cnfClause.
-    '''
-    if len(clause) == 0:
-        return []
-    elif type(clause) == str:
-        return [clause]
-    elif len(clause) <= 2:   # P or not P, just return self
-        return [clause[-1]]
-    else:
-        rtSymbols = []
-        for s in clause[1:]:
-            pI = propSymbols(s)
-            rtSymbols.extend(list(set(pI)))
-        return list(set(rtSymbols))
-
-# ______________________________________________________________________________
-# PL resolution method
-
-
-def modelExtend(model, p, v):
-    '''
-    Return the new model with p values v added
-    '''
-    model2 = model.copy()
-    model2[p] = v
-    return model2
-
-
-def duplicateOrElemination(clauses):
-    '''
-    Eleminate the duplicate item in or clause
-    eg: [OR, 'P', [NOT, 'P']] return []
-    '''
-    if type(clauses) == str or len(clauses) <= 1:
-        return clauses
-    else:
-        for item in clauses:
-            if negativeInside(item) in clauses:
-                return []
-    return clauses
 
 
 def orContainTautology(clause):
@@ -179,26 +60,9 @@ def orContainTautology(clause):
     return False
 
 
-def subSumption(clauses):
-    '''
-    return if the or clause contain the tautology
-    eg: ['P', [AND, 'P', "Q"]] return ['P']
-    '''
-    unitClauses = [item for item in clauses if type(
-        item) == str or (type(item) == list) and len(item) == 2]
-    print("unitClauses:", unitClauses)
-    print("before sub:", clauses)
-    for cc in clauses:
-        for unitC in unitClauses:
-            if type(cc) == list and len(cc) > 2:
-                if unitC in disCombine(OR, cc) and cc in clauses:
-                    clauses.remove(cc)
-    print("After sub:", clauses)
-
-
 def plResolution(kb, alpha):
     '''
-    returns if KB entailments alpha True or False using pl resolution
+    Returns if KB entailments alpha True or False using pl resolution
     kb: KnowledgeBase
     alpha: the result to prove
     '''
@@ -214,7 +78,7 @@ def plResolution(kb, alpha):
         for (ci, cj) in pairs:
             if isResolvable(ci, cj):
                 resolvents = plResolve(ci, cj)
-                # 
+                #
                 for tempCR in resolvents:
                     if not tempCR in clauses and not tempCR in newList:
                         newList.append(tempCR)
@@ -271,9 +135,10 @@ def plResolve(ci, cj):
                 clauses.append(toAddD)
     return clauses
 
+
 def negativeInside(s):
     '''
-    move negation sign inside s
+    Move negation sign inside s
     '''
     if type(s) == str:
         return [NOT, s]
@@ -293,7 +158,7 @@ def negativeInside(s):
 
 def toUnique(clauses):
     '''
-    return a clauses list whose elements are unique
+    Return a clauses list whose elements are unique
     '''
     if type(clauses) == str:
         return clauses
@@ -313,54 +178,12 @@ def toUnique(clauses):
 
 def isSublistOf(l1, l2):
     '''
-    return if l1 is sublist of l2
+    Return if l1 is sublist of l2
     '''
     for element in l1:
         if not element in l2:
             return False
     return True
-
-
-# ______________________________________________________________________________
-# WaklSAT method
-
-
-def walkSAT(clauses, p=0.5, maxFlips=10000):
-    '''
-    returns every symbols' result by randomly flipping values of variables for maxFlips times and check its satisfiability
-    clauses: the clauses to check
-    p: the probability of flipping the value of the symbol
-    maxFlip: maximum flipping time
-    '''
-    symbols = propSymbols(combine(AND, clauses))
-    print("symbols: ", symbols)
-
-    model = {s: random.choice([True, False]) for s in symbols}
-    for i in range(maxFlips):
-        print("running time:", i)
-        satisfied, unsatisfied = [], []
-        for clause in clauses:
-            if plTrue(clause, model):
-                satisfied.append(clause)
-            else:
-                unsatisfied.append(clause)
-        if len(unsatisfied) == 0:  # if model satisfied all the clauses
-            return model
-        clause = random.choice(unsatisfied)
-        if p > random.uniform(0.0, 1.0):
-            sym = random.choice(list(propSymbols(clause)))
-        else:
-            def sat_count(sym):
-                # Return the number of clauses satisfied after flipping the symbol.
-                model[sym] = not model[sym]
-                count = len(
-                    [clause for clause in clauses if plTrue(clause, model)])
-                model[sym] = not model[sym]
-                return count
-            sym = max(propSymbols(clause), key=sat_count)
-        model[sym] = not model[sym]
-    # Return None if no solution is found within the flip limit
-    return None
 
 
 if __name__ == "__main__":
@@ -381,4 +204,3 @@ if __name__ == "__main__":
         kb.tell(cl)
 
     print(plResolution(kb, alpha))
-    print(tTEntails(kb, alpha))

@@ -26,28 +26,6 @@ def read_file(filepath):
     return alpha, knowledgeBase
 
 
-def str_to_struct(str):
-    if len(str.split(OR)) == 1:
-        if '-' in str:
-            return [NOT, str.replace('-', '').replace(' ', '').replace('\n', '')]
-        else:
-            return str.replace(' ', '').replace('\n', '')
-    # EXtract literal from input
-    literals = str.split(OR)
-    for index in range(len(literals)):
-        if '-' in literals[index]:
-            literals[index] = [NOT, literals[index].replace(
-                ' ', '').replace('\n', '').replace('-', '')]
-        else:
-            literals[index] = literals[index].replace(
-                ' ', '').replace('\n', '')
-    # Sort literal before return
-    ans = [OR]
-    for literal in literals:
-        ans.append(literal)
-    return ans
-
-
 def write_file(filepath, output, result):
     # Open file
     my_path = os.path.abspath(os.path.dirname(__file__))
