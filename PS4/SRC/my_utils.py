@@ -37,9 +37,9 @@ def str_to_struct(str):
     if len(str.split(OR)) == 1:
         if '-' in str:
             return [NOT, str
-                    .replace('-', '')
                     .replace(' ', '')
-                    .replace('\n', '')]
+                    .replace('\n', '')
+                    .replace('-', '')]
         else:
             return str.replace(' ', '').replace('\n', '')
     # EXtract literal from input

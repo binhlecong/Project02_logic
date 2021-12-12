@@ -4,68 +4,8 @@ import cnf
 from const import *
 
 
-class KnowledgeBase:
-    '''KnowledgeBase class'''
-
-    def __init__(self, sentence=None):
-        self.clauses = []
-        self.detailsTurn = False    # print the algorithm details or not
-        if sentence:
-            self.tell(sentence)
-
-    def tell(self, sentence):
-        '''
-        Add the sentence to KnowledgeBase
-        also reduce it to smallest structure
-        '''
-        self.clauses.extend(disCombine(AND, cnf.cnf(sentence)))
-
-
-def combine(op, elements):
-    '''Return the combination of elements using operation op'''
-    if len(elements) == 0:
-        return elements
-    elif len(elements) == 1:
-        return elements[0]
-    elif op == AND:
-        return [AND] + elements
-    elif op == OR:
-        return [OR] + elements
-
-
-def disCombine(op, clause):
-    '''Return the discombination(list) of clause using operation op'''
-    result = []
-    if type(clause) == str:
-        return [clause]
-    elif len(clause) <= 2:    # P or not P, just return self
-        return [clause]
-    elif op == clause[0]:
-        return clause[1:]
-    else:
-        return [clause]
-
-
-def orContainTautology(clause):
-    '''
-    return if the or clause contain the tautology
-    eg: ['P', [NOT, 'P']]
-    '''
-    if type(clause) == str or len(clause) <= 1:
-        return False
-    else:
-        for item in clause:
-            if negativeInside(item) in clause:
-                return True
-    return False
-
-
 def plResolution(kb, alpha):
-    '''
-    Returns if KB entailments alpha True or False using pl resolution
-    kb: KnowledgeBase
-    alpha: the result to prove
-    '''
+    '''Main algorithm to solve problem'''
     clauses = kb.clauses + disCombine(AND, cnf.cnf(negativeInside(alpha)))
     newList = []
     output = []
@@ -99,10 +39,56 @@ def plResolution(kb, alpha):
             return output, True
 
 
+class KnowledgeBase:
+    '''KnowledgeBase class'''
+
+    def __init__(self, sentence=None):
+        self.clauses = []
+        self.detailsTurn = False    # print the algorithm details or not
+        if sentence:
+            self.tell(sentence)
+
+    def tell(self, sentence):
+        self.clauses.extend(disCombine(AND, cnf.cnf(sentence)))
+
+
+def combine(op, elements):
+    '''Return the combination of elements'''
+    if len(elements) == 0:
+        return elements
+    elif len(elements) == 1:
+        return elements[0]
+    elif op == AND:
+        return [AND] + elements
+    elif op == OR:
+        return [OR] + elements
+
+
+def disCombine(op, clause):
+    '''Return the discombination(list) of clause'''
+    if type(clause) == str:
+        return [clause]
+    elif len(clause) <= 2:
+        return [clause]
+    elif op == clause[0]:
+        return clause[1:]
+    else:
+        return [clause]
+
+
+def orContainTautology(clause):
+    '''Return excess clause like ['P', [NOT, 'P']]'''
+    if type(clause) == str or len(clause) <= 1:
+        return False
+    else:
+        for item in clause:
+            if negativeInside(item) in clause:
+                return True
+    return False
+
+
 def isResolvable(ci, cj):
-    '''
-    Check if 2 clauses are worth resolving according to the assignment 
-    '''
+    '''Check if 2 clauses are worth resolving according to the assignment '''
     cnt = 0
     for di in disCombine(OR, ci):
         for dj in disCombine(OR, cj):
@@ -112,22 +98,17 @@ def isResolvable(ci, cj):
 
 
 def plResolve(ci, cj):
-    '''
-    Returns all clauses that can be obtained from clauses ci and cj
-    '''
+    '''Returns all clauses that c'''
     clauses = []
     for di in disCombine(OR, ci):
         for dj in disCombine(OR, cj):
             if di == negativeInside(dj) or negativeInside(di) == dj:
-
                 diNew = disCombine(OR, ci)
                 diNew.remove(di)
                 djNew = disCombine(OR, cj)
                 djNew.remove(dj)
-
                 dNew = diNew + djNew
                 dNew = toUnique(dNew)
-
                 toAddD = combine(OR, dNew)
                 # Keep the literals in alphabetical order
                 sortClause(toAddD)
@@ -137,9 +118,7 @@ def plResolve(ci, cj):
 
 
 def negativeInside(s):
-    '''
-    Move negation sign inside s
-    '''
+    '''Move negation sign inside s'''
     if type(s) == str:
         return [NOT, s]
     elif s[0] == NOT:
@@ -157,9 +136,7 @@ def negativeInside(s):
 
 
 def toUnique(clauses):
-    '''
-    Return a clauses list whose elements are unique
-    '''
+    '''Return a clauses list whose elements are unique'''
     if type(clauses) == str:
         return clauses
     if len(clauses) == 0:
@@ -177,30 +154,28 @@ def toUnique(clauses):
 
 
 def isSublistOf(l1, l2):
-    '''
-    Return if l1 is sublist of l2
-    '''
+    '''Check if l1 is sublist of l2'''
     for element in l1:
         if not element in l2:
             return False
     return True
 
 
-if __name__ == "__main__":
-    ''' Testing '''
+# if __name__ == "__main__":
+#     ''' Testing '''
 
-    problem1 = [AND,
-                [OR, [NOT, 'A'], 'B'],
-                [OR, [NOT, 'C'], 'B'],
-                [OR, 'A', [NOT, 'B'], 'C'],
-                [NOT, 'B'],
-                ]
-    alpha = [NOT, 'A']
-    # alpha = 'A'
+#     problem1 = [AND,
+#                 [OR, [NOT, 'A'], 'B'],
+#                 [OR, [NOT, 'C'], 'B'],
+#                 [OR, 'A', [NOT, 'B'], 'C'],
+#                 [NOT, 'B'],
+#                 ]
+#     alpha = [NOT, 'A']
+#     # alpha = 'A'
 
-    kb = KnowledgeBase()
-    kb.detailsTurn = True
-    for cl in problem1[1:]:
-        kb.tell(cl)
+#     kb = KnowledgeBase()
+#     kb.detailsTurn = True
+#     for cl in problem1[1:]:
+#         kb.tell(cl)
 
-    print(plResolution(kb, alpha))
+#     print(plResolution(kb, alpha))

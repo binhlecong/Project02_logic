@@ -1,6 +1,23 @@
 from const import *
 
 
+def cnf(s):
+    s = biCondElimination(s)
+    s = impliElimination(s)
+    s = demorgan(s)
+    s = twoNegElimination(s)
+    s = binaryize(s)
+    s = distrib(s)
+    # print("before andCombine:", s)
+    s = andCombine(s)
+    # print("before orCombine:", s)
+    s = orCombine(s)
+    # print("after orCombine:", s)
+    s = duplicateLiteralsElination(s)
+    s = duplicateClausesElimination(s)
+    return s
+
+
 def biCondElimination(s):
     if type(s) is str:
         return s
@@ -76,9 +93,6 @@ def distrib(s):
 
 
 def distribOnBi(s):
-    '''
-    only works on binary connectives
-    '''
     if type(s) is str:
         return s
     elif s[0] == OR and type(s[1]) is list and s[1][0] == AND:
@@ -92,9 +106,6 @@ def distribOnBi(s):
 
 
 def andCombine(s):
-    '''
-    use and to combine
-    '''
     revision = andCombine1(s)
     if revision == s:
         return s
@@ -118,9 +129,6 @@ def andCombine1(s):
 
 
 def orCombine(s):
-    '''
-    use or to combine
-    '''
     revision = orCombine1(s)
     if revision == s:
         return s
@@ -195,35 +203,18 @@ def unique(c, remains):
 #     elif type(s) == list and len(s) >= 2:
 
 
-def cnf(s):
-    s = biCondElimination(s)
-    s = impliElimination(s)
-    s = demorgan(s)
-    s = twoNegElimination(s)
-    s = binaryize(s)
-    s = distrib(s)
-    # print("before andCombine:", s)
-    s = andCombine(s)
-    # print("before orCombine:", s)
-    s = orCombine(s)
-    # print("after orCombine:", s)
-    s = duplicateLiteralsElination(s)
-    s = duplicateClausesElimination(s)
-    return s
+# if __name__ == "__main__":
 
-
-if __name__ == "__main__":
-
-    sentences = [AND,
-                 [NOT, 'P11'],
-                 [IFF, 'B11', [OR, 'P12', 'P21']],
-                 [IFF, 'B21', [OR, 'P11', 'P22', 'P31']],
-                 [NOT, 'B11'],
-                 'B21',
-                 'P12']
-    test = [AND, 'P12', [OR, [NOT, 'P12'], 'P21']]
-    testand = [OR, 'P12', [AND, [NOT, 'P12'], 'P21']]
-    # print(orCombine(testand))
-    print(repr(cnf(sentences)))
-    print(repr(cnf(test)))
-    print(repr(cnf(testand)))
+#     sentences = [AND,
+#                  [NOT, 'P11'],
+#                  [IFF, 'B11', [OR, 'P12', 'P21']],
+#                  [IFF, 'B21', [OR, 'P11', 'P22', 'P31']],
+#                  [NOT, 'B11'],
+#                  'B21',
+#                  'P12']
+#     test = [AND, 'P12', [OR, [NOT, 'P12'], 'P21']]
+#     testand = [OR, 'P12', [AND, [NOT, 'P12'], 'P21']]
+#     # print(orCombine(testand))
+#     print(repr(cnf(sentences)))
+#     print(repr(cnf(test)))
+#     print(repr(cnf(testand)))
