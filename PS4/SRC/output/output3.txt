@@ -1,24 +1,24 @@
-5
--B OR -D OR E
-C OR -D
--A OR -C OR E
-B OR -C
--C OR E
-8
--A OR -B OR -D OR E
--A OR -C OR -D OR E
--A OR B OR -D
--C OR -D OR E
-B OR -D OR E
+6
+B OR -D OR -F
+B OR E
 -D OR E
--A OR -D OR E
+-E OR -F
+-D OR -E OR -G
+-D OR -E
+9
+B OR -D OR -G
 B OR -D
-2
--A OR C OR -D
-C OR -D OR E
-1
--A OR B OR -D OR E
-1
--A OR C OR -D OR E
-0
-NO
+-D OR -F
+B OR -F
+E
+-E OR -G
+-E
+-D OR -G
+-D
+5
+B OR -G
+B
+-F
+-G
+{}
+YES

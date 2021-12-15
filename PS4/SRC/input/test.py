@@ -2,7 +2,7 @@ import random
 
 kb = []
 
-test_from = 1
+test_from = 3
 test_to = 3
 
 '''gen CFN sz literal into file F'''
@@ -27,8 +27,8 @@ def gen_test():
     # return
     for id in range(test_from, test_to + 1):
         kb.clear
-        n = random.randint(5, 6) # number of clauses
-        f = open("input" + str(id) + ".txt", "w")
+        n = random.randint(6, 8) # number of clauses
+        f = open("./input" + str(id) + ".txt", "w")
         gen_clause(random.randint(2, 3), f)
         f.write(str(n) + '\n')
         for i in range(n):

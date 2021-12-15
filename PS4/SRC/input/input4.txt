@@ -1,7 +1,7 @@
 X OR Y
 5
-B OR C OR -B  OR -C
-X OR -A
--A OR -Z OR Y
-Z OR A
+B OR C
+-A OR X
+-A OR Y OR -Z
+A OR Z
 -A

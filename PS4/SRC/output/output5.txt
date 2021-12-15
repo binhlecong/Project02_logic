@@ -1,22 +1,15 @@
-6
-B OR -C OR -D
-B OR F
-A OR -C OR -E
-A OR -D OR F
-D OR -E OR F
+7
+D OR -F
+-B OR C
+-E
+A OR -F
+C OR E
+B
+-F
+3
 C
-9
-B OR -C OR -E
-B OR -D OR F
-A OR -C OR -E OR F
-A OR -D
-D OR -E
-A OR -E OR F
-B OR -C OR -E OR F
-B OR -D
-A OR -E
-2
-B OR -E OR F
-B OR -E
-0
-NO
+-B
+E
+1
+{}
+YES

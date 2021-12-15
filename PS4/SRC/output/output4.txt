@@ -2,10 +2,9 @@
 X OR Z
 -A OR -Z
 Z
-3
+2
 -A OR X OR Y
 -A OR Y
--A OR X
 2
 X OR Y OR Z
 Y OR Z

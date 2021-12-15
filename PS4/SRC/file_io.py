@@ -14,8 +14,8 @@ def read_file(filepath):
     kb_size = int(file.readline(), base=10)
     # Read knowledgebase
     kb = [AND]
-    for line in file:
-        kb.append(str_to_struct(line))
+    for i in range(kb_size):
+        kb.append(str_to_struct(file.readline()))
     # Close file
     file.close()
     # Create a KnowledgeBase from list

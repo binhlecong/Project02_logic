@@ -2,6 +2,6 @@
 5
 -B OR D
 A
--B OR -D OR -A
+-A OR -B OR -D
 -A OR C OR D
 C OR B
