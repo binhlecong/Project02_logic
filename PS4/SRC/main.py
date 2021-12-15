@@ -5,7 +5,9 @@ from const import *
 
 def main():
     '''Main function'''
-    for i in range(1, 6):
+    start = 1
+    end = 5
+    for i in range(start, end + 1):
         # Read from input_.txt
         alpha, kb = read_file('input/input{}.txt'.format(str(i)))
         # Call PL-Resolution fucntion
