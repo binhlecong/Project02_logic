@@ -1,11 +1,9 @@
+3
+C OR -D
+C OR -E
+A OR C OR -E
 2
--C
--B OR C
-2
--A OR C
-A OR -B
-2
--A OR B
-A OR -C
+C
+A OR C
 0
 NO

@@ -1,5 +1,13 @@
 3
-{}
--B OR -C OR C
-B OR -C OR C
-YES
+X OR Z
+-A OR -Z
+Z
+3
+-A OR X OR Y
+-A OR Y
+-A OR X
+2
+X OR Y OR Z
+Y OR Z
+0
+NO
