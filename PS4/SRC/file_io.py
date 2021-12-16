@@ -22,7 +22,7 @@ def read_file(filepath):
     knowledgeBase = KnowledgeBase()
     knowledgeBase.detailsTurn = True
     for cl in kb[1:]:
-        knowledgeBase.tell(cl)
+        knowledgeBase.add(cl)
     return alpha, knowledgeBase
 
 

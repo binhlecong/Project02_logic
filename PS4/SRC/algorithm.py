@@ -46,9 +46,9 @@ class KnowledgeBase:
         self.clauses = []
         self.detailsTurn = False    # print the algorithm details or not
         if sentence:
-            self.tell(sentence)
+            self.add(sentence)
 
-    def tell(self, sentence):
+    def add(self, sentence):
         self.clauses.extend(disCombine(AND, cnf.cnf(sentence)))
 
 
