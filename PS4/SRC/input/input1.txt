@@ -4,4 +4,4 @@
 A
 -A OR -B OR -D
 -A OR C OR D
-C OR B
+ B OR C
