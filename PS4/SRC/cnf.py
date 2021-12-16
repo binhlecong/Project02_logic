@@ -8,11 +8,8 @@ def cnf(s):
     s = twoNegElimination(s)
     s = binaryize(s)
     s = distrib(s)
-    # print("before andCombine:", s)
     s = andCombine(s)
-    # print("before orCombine:", s)
     s = orCombine(s)
-    # print("after orCombine:", s)
     s = duplicateLiteralsElination(s)
     s = duplicateClausesElimination(s)
     return s

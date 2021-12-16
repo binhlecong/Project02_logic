@@ -1,4 +1,5 @@
-from algorithm import *
+from resolution import *
+from knowledge_base import *
 from file_io import *
 from const import *
 

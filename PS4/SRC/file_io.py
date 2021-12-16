@@ -1,5 +1,5 @@
 import os
-from algorithm import KnowledgeBase
+from knowledge_base import KnowledgeBase
 from my_utils import *
 from const import AND, NOT, OR
 
