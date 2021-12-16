@@ -3,7 +3,7 @@ import cnf
 from const import *
 
 
-def plResolution(kb, alpha):
+def plResolution(alpha, kb):
     '''Main algorithm to solve problem'''
     clauses = kb.clauses + disCombine(AND, cnf.cnf(negativeInside(alpha)))
     newList = []

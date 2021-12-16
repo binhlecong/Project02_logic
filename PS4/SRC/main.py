@@ -12,7 +12,7 @@ def main():
         # Read from input_.txt
         alpha, kb = read_file('input/input{}.txt'.format(str(i)))
         # Call PL-Resolution fucntion
-        output, result = plResolution(kb, alpha)
+        output, result = plResolution(alpha, kb)
         # Write to output_.txt
         write_file('output/output{}.txt'.format(str(i)), output, result)
 
