@@ -83,7 +83,7 @@ def is_resolvable(ci, cj):
 
 
 def pl_resolve(ci, cj):
-    '''Returns all clauses that c'''
+    '''Resolve the two clauses'''
     clauses = []
     for di in discombine(OR, ci):
         for dj in discombine(OR, cj):
@@ -102,20 +102,20 @@ def pl_resolve(ci, cj):
     return clauses
 
 
-def negative_inside(s):
+def negative_inside(cl):
     '''Move negation sign inside s'''
-    if type(s) == str:
-        return [NOT, s]
-    elif s[0] == NOT:
-        return s[1]
-    elif s[0] == AND:
+    if type(cl) == str:
+        return [NOT, cl]
+    elif cl[0] == NOT:
+        return cl[1]
+    elif cl[0] == AND:
         tempRet = [OR]
-        for element in s[1:]:
+        for element in cl[1:]:
             tempRet.append(negative_inside(element))
         return tempRet
-    elif s[0] == OR:
+    elif cl[0] == OR:
         tempRet = [AND]
-        for element in s[1:]:
+        for element in cl[1:]:
             tempRet.append(negative_inside(element))
         return tempRet
 

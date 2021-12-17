@@ -8,7 +8,6 @@ class KnowledgeBase:
 
     def __init__(self, sentence=None):
         self.clauses = []
-        self.detailsTurn = False    # print the algorithm details or not
         if sentence:
             self.add(sentence)
 

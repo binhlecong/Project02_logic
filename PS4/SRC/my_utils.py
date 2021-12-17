@@ -2,20 +2,18 @@ from const import NOT, OR
 
 
 def sortClause(clause):
-    '''
-    Return clause in alphabetical order
-    '''
+    '''Sort literals in a clause in alphabetical order'''
     for i in range(1, len(clause)):
         # Turn flag off
         swapped = False
         # loop to compare array elements
         for j in range(1, len(clause) - i):
-            # Extract name of literals
+            # Extract name of literal j
             if type(clause[j]) == str:
                 valueOfJ = clause[j]
             else:
                 valueOfJ = clause[j][1]
-
+            # Extract name of literal j + 1
             if type(clause[j + 1]) == str:
                 valueOfJ_1 = clause[j + 1]
             else:
@@ -34,6 +32,7 @@ def sortClause(clause):
 
 
 def str_to_struct(str):
+    '''Convert str input to list structure'''
     if len(str.split(OR)) == 1:
         if '-' in str:
             return [NOT, str
@@ -62,6 +61,7 @@ def str_to_struct(str):
 
 
 def struct_to_str(line):
+    '''Convert from list structure to str output'''
     ans = ''
     if type(line) == list:
         if len(line) > 0:
@@ -79,6 +79,7 @@ def struct_to_str(line):
 
 
 def literal_to_str(literal):
+    '''Convert [NOT, 'A'] to -A or just the string'''
     if type(literal) == str:
         return literal
     return '-' + literal[1]

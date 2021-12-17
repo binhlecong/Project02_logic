@@ -11,7 +11,7 @@ def main():
     for i in range(start, end + 1):
         # Read from input_.txt
         alpha, kb = read_file('input/input{}.txt'.format(str(i)))
-        # Call PL-Resolution fucntion
+        # Use PL-Resolution algorithm
         output, result = pl_resolution(alpha, kb)
         # Write to output_.txt
         write_file('output/output{}.txt'.format(str(i)), output, result)
