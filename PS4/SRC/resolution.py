@@ -17,7 +17,6 @@ def pl_resolution(alpha, kb):
         for (ci, cj) in pairs:
             if is_resolvable(ci, cj):
                 resolvents = pl_resolve(ci, cj)
-                #
                 for tempCR in resolvents:
                     if not tempCR in clauses and not tempCR in newList:
                         newList.append(tempCR)
@@ -25,14 +24,14 @@ def pl_resolution(alpha, kb):
         # Add clauses of this loop to the output
         output.append(tmpList)
         # Remove tautology
-        newList = [cc for cc in newList if not contain_tautology(cc)]
+        newList = [item for item in newList if not contain_tautology(item)]
         # Return result
         if is_sublist_of(newList, clauses):
             return output, False
         # Insert generated clauses into clauses
-        for cc in newList:
-            if not cc in clauses:
-                clauses.append(cc)
+        for item in newList:
+            if not item in clauses:
+                clauses.append(item)
         # Return result
         if [] in clauses:
             return output, True
