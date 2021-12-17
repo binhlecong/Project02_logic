@@ -8,12 +8,12 @@ def sortClause(clause):
         swapped = False
         # loop to compare array elements
         for j in range(1, len(clause) - i):
-            # Extract name of literal j
+            # Extract name of literal at (j)
             if type(clause[j]) == str:
                 valueOfJ = clause[j]
             else:
                 valueOfJ = clause[j][1]
-            # Extract name of literal j + 1
+            # Extract name of literal at (j+1)
             if type(clause[j + 1]) == str:
                 valueOfJ_1 = clause[j + 1]
             else:

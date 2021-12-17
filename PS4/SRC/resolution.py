@@ -24,7 +24,7 @@ def pl_resolution(alpha, kb):
         # Add clauses of this loop to the output
         output.append(tmpList)
         # Remove tautology
-        newList = [item for item in newList if not contain_tautology(item)]
+        newList = [item for item in newList if not has_tautology(item)]
         # Return result
         if is_sublist_of(newList, clauses):
             return output, False
@@ -61,7 +61,7 @@ def discombine(op, clause):
         return [clause]
 
 
-def contain_tautology(clause):
+def has_tautology(clause):
     '''Return excess clause like ['P', [NOT, 'P']]'''
     if type(clause) == str or len(clause) <= 1:
         return False
@@ -73,7 +73,7 @@ def contain_tautology(clause):
 
 
 def is_resolvable(ci, cj):
-    '''Check if 2 clauses are worth resolving according to the assignment '''
+    '''Check if 2 clauses are worth resolving according to the assignment'''
     cnt = 0
     for di in discombine(OR, ci):
         for dj in discombine(OR, cj):
@@ -82,15 +82,15 @@ def is_resolvable(ci, cj):
     return cnt == 1
 
 
-def pl_resolve(ci, cj):
+def pl_resolve(cl_i, cl_j):
     '''Resolve the two clauses'''
     clauses = []
-    for di in discombine(OR, ci):
-        for dj in discombine(OR, cj):
+    for di in discombine(OR, cl_i):
+        for dj in discombine(OR, cl_j):
             if di == negative_inside(dj) or negative_inside(di) == dj:
-                diNew = discombine(OR, ci)
+                diNew = discombine(OR, cl_i)
                 diNew.remove(di)
-                djNew = discombine(OR, cj)
+                djNew = discombine(OR, cl_j)
                 djNew.remove(dj)
                 dNew = diNew + djNew
                 dNew = to_unique(dNew)
@@ -103,7 +103,7 @@ def pl_resolve(ci, cj):
 
 
 def negative_inside(cl):
-    '''Move negation sign inside s'''
+    '''Move negation sign inside cl'''
     if type(cl) == str:
         return [NOT, cl]
     elif cl[0] == NOT:
@@ -121,7 +121,7 @@ def negative_inside(cl):
 
 
 def to_unique(clauses):
-    '''Return a clauses list whose elements are unique'''
+    '''Return a list of clauses in which items are unique'''
     if type(clauses) == str:
         return clauses
     if len(clauses) == 0:
@@ -136,9 +136,9 @@ def to_unique(clauses):
     return retClauses
 
 
-def is_sublist_of(l1, l2):
+def is_sublist_of(l_i, l_j):
     '''Check if l1 is sublist of l2'''
-    for element in l1:
-        if not element in l2:
+    for element in l_i:
+        if not element in l_j:
             return False
     return True
