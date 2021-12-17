@@ -1,6 +1,6 @@
 from const import AND
 import cnf
-from resolution import dis_combine
+from resolution import discombine
 
 
 class KnowledgeBase:
@@ -13,4 +13,4 @@ class KnowledgeBase:
             self.add(sentence)
 
     def add(self, sentence):
-        self.clauses.extend(dis_combine(AND, cnf.cnf(sentence)))
+        self.clauses.extend(discombine(AND, cnf.cnf(sentence)))

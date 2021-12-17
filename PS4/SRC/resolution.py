@@ -5,7 +5,7 @@ from const import *
 
 def pl_resolution(alpha, kb):
     '''Main algorithm to solve problem'''
-    clauses = kb.clauses + dis_combine(AND, cnf.cnf(negative_inside(alpha)))
+    clauses = kb.clauses + discombine(AND, cnf.cnf(negative_inside(alpha)))
     newList = []
     output = []
     while True:
@@ -50,7 +50,7 @@ def combine(op, elements):
         return [OR] + elements
 
 
-def dis_combine(op, clause):
+def discombine(op, clause):
     '''Return the discombination(list) of clause'''
     if type(clause) == str:
         return [clause]
@@ -76,8 +76,8 @@ def contain_tautology(clause):
 def is_resolvable(ci, cj):
     '''Check if 2 clauses are worth resolving according to the assignment '''
     cnt = 0
-    for di in dis_combine(OR, ci):
-        for dj in dis_combine(OR, cj):
+    for di in discombine(OR, ci):
+        for dj in discombine(OR, cj):
             if di == negative_inside(dj) or negative_inside(di) == dj:
                 cnt += 1
     return cnt == 1
@@ -86,12 +86,12 @@ def is_resolvable(ci, cj):
 def pl_resolve(ci, cj):
     '''Returns all clauses that c'''
     clauses = []
-    for di in dis_combine(OR, ci):
-        for dj in dis_combine(OR, cj):
+    for di in discombine(OR, ci):
+        for dj in discombine(OR, cj):
             if di == negative_inside(dj) or negative_inside(di) == dj:
-                diNew = dis_combine(OR, ci)
+                diNew = discombine(OR, ci)
                 diNew.remove(di)
-                djNew = dis_combine(OR, cj)
+                djNew = discombine(OR, cj)
                 djNew.remove(dj)
                 dNew = diNew + djNew
                 dNew = to_unique(dNew)
@@ -128,9 +128,7 @@ def to_unique(clauses):
     if len(clauses) == 0:
         return clauses
     retClauses = []
-
     strElementList = list(set([str(element) for element in clauses]))
-
     for element2 in strElementList:
         if '[' in element2:
             retClauses.append(eval(element2))
