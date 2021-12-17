@@ -2,53 +2,53 @@ from const import *
 
 
 def cnf(s):
-    s = biCondElimination(s)
-    s = impliElimination(s)
+    s = bi_cond_elimination(s)
+    s = impli_elimination(s)
     s = demorgan(s)
-    s = twoNegElimination(s)
+    s = two_neg_elimination(s)
     s = binaryize(s)
     s = distrib(s)
-    s = andCombine(s)
-    s = orCombine(s)
-    s = duplicateLiteralsElination(s)
-    s = duplicateClausesElimination(s)
+    s = and_combine(s)
+    s = or_combine(s)
+    s = duplicate_literals_elimination(s)
+    s = duplicate_clauses_elimination(s)
     return s
 
 
-def biCondElimination(s):
+def bi_cond_elimination(s):
     if type(s) is str:
         return s
     elif s[0] == IFF:
         return([AND,
                 [IF,
-                 biCondElimination(s[1]),
-                 biCondElimination(s[2])],
+                 bi_cond_elimination(s[1]),
+                 bi_cond_elimination(s[2])],
                 [IF,
-                 biCondElimination(s[2]),
-                 biCondElimination(s[1])]])
+                 bi_cond_elimination(s[2]),
+                 bi_cond_elimination(s[1])]])
     else:
-        return([s[0]] + [biCondElimination(i) for i in s[1:]])
+        return([s[0]] + [bi_cond_elimination(i) for i in s[1:]])
 
 
-def impliElimination(s):
+def impli_elimination(s):
     if type(s) is str:
         return s
     elif s[0] == IF:
         return([OR,
                 [NOT,
-                 impliElimination(s[1])],
-                impliElimination(s[2])])
+                 impli_elimination(s[1])],
+                impli_elimination(s[2])])
     else:
-        return([s[0]] + [impliElimination(i) for i in s[1:]])
+        return([s[0]] + [impli_elimination(i) for i in s[1:]])
 
 
-def twoNegElimination(s):
+def two_neg_elimination(s):
     if type(s) is str:
         return s
     elif s[0] == NOT and type(s[1]) is list and s[1][0] == NOT:
-        return(twoNegElimination(s[1][1]))
+        return(two_neg_elimination(s[1][1]))
     else:
-        return([s[0]] + [twoNegElimination(i) for i in s[1:]])
+        return([s[0]] + [two_neg_elimination(i) for i in s[1:]])
 
 
 def demorgan(s):
@@ -102,15 +102,15 @@ def distribOnBi(s):
         return ([s[0]] + [distrib(i) for i in s[1:]])
 
 
-def andCombine(s):
-    revision = andCombine1(s)
+def and_combine(s):
+    revision = and_combine1(s)
     if revision == s:
         return s
     else:
-        return andCombine(revision)
+        return and_combine(revision)
 
 
-def andCombine1(s):
+def and_combine1(s):
     if type(s) is str:
         return s
     elif s[0] == AND:
@@ -122,18 +122,18 @@ def andCombine1(s):
                 result.append(i)
         return result
     else:
-        return([s[0]] + [andCombine1(i) for i in s[1:]])
+        return([s[0]] + [and_combine1(i) for i in s[1:]])
 
 
-def orCombine(s):
-    revision = orCombine1(s)
+def or_combine(s):
+    revision = or_combine1(s)
     if revision == s:
         return s
     else:
-        return orCombine(revision)
+        return or_combine(revision)
 
 
-def orCombine1(s):
+def or_combine1(s):
     if type(s) is str:
         return s
     elif s[0] == OR:
@@ -145,16 +145,16 @@ def orCombine1(s):
                 result.append(i)
         return result
     else:
-        return([s[0]] + [orCombine1(i) for i in s[1:]])
+        return([s[0]] + [or_combine1(i) for i in s[1:]])
 
 
-def duplicateLiteralsElination(s):
+def duplicate_literals_elimination(s):
     if type(s) is str:
         return s
     if s[0] == NOT:
         return s
     if s[0] == AND:
-        return([AND] + [duplicateLiteralsElination(i) for i in s[1:]])
+        return([AND] + [duplicate_literals_elimination(i) for i in s[1:]])
     if s[0] == OR:
         remains = []
         for l in s[1:]:
@@ -166,7 +166,7 @@ def duplicateLiteralsElination(s):
             return([OR] + remains)
 
 
-def duplicateClausesElimination(s):
+def duplicate_clauses_elimination(s):
     if type(s) is str:
         return s
     if s[0] == NOT:
@@ -211,7 +211,7 @@ def unique(c, remains):
 #                  'P12']
 #     test = [AND, 'P12', [OR, [NOT, 'P12'], 'P21']]
 #     testand = [OR, 'P12', [AND, [NOT, 'P12'], 'P21']]
-#     # print(orCombine(testand))
+#     # print(or_combine(testand))
 #     print(repr(cnf(sentences)))
 #     print(repr(cnf(test)))
 #     print(repr(cnf(testand)))

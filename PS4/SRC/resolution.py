@@ -3,9 +3,9 @@ import cnf
 from const import *
 
 
-def plResolution(alpha, kb):
+def pl_resolution(alpha, kb):
     '''Main algorithm to solve problem'''
-    clauses = kb.clauses + disCombine(AND, cnf.cnf(negativeInside(alpha)))
+    clauses = kb.clauses + dis_combine(AND, cnf.cnf(negative_inside(alpha)))
     newList = []
     output = []
     while True:
@@ -15,8 +15,8 @@ def plResolution(alpha, kb):
                  for i in range(n) for j in range(i+1, n)]
         tmpList = []
         for (ci, cj) in pairs:
-            if isResolvable(ci, cj):
-                resolvents = plResolve(ci, cj)
+            if is_resolvable(ci, cj):
+                resolvents = pl_resolve(ci, cj)
                 #
                 for tempCR in resolvents:
                     if not tempCR in clauses and not tempCR in newList:
@@ -25,9 +25,9 @@ def plResolution(alpha, kb):
         # Add clauses of this loop to the output
         output.append(tmpList)
         # Remove tautology
-        newList = [cc for cc in newList if not orContainTautology(cc)]
+        newList = [cc for cc in newList if not contain_tautology(cc)]
         # Return result
-        if isSublistOf(newList, clauses):
+        if is_sublist_of(newList, clauses):
             return output, False
         # Insert generated clauses into clauses
         for cc in newList:
@@ -50,7 +50,7 @@ def combine(op, elements):
         return [OR] + elements
 
 
-def disCombine(op, clause):
+def dis_combine(op, clause):
     '''Return the discombination(list) of clause'''
     if type(clause) == str:
         return [clause]
@@ -62,39 +62,39 @@ def disCombine(op, clause):
         return [clause]
 
 
-def orContainTautology(clause):
+def contain_tautology(clause):
     '''Return excess clause like ['P', [NOT, 'P']]'''
     if type(clause) == str or len(clause) <= 1:
         return False
     else:
         for item in clause:
-            if negativeInside(item) in clause:
+            if negative_inside(item) in clause:
                 return True
     return False
 
 
-def isResolvable(ci, cj):
+def is_resolvable(ci, cj):
     '''Check if 2 clauses are worth resolving according to the assignment '''
     cnt = 0
-    for di in disCombine(OR, ci):
-        for dj in disCombine(OR, cj):
-            if di == negativeInside(dj) or negativeInside(di) == dj:
+    for di in dis_combine(OR, ci):
+        for dj in dis_combine(OR, cj):
+            if di == negative_inside(dj) or negative_inside(di) == dj:
                 cnt += 1
     return cnt == 1
 
 
-def plResolve(ci, cj):
+def pl_resolve(ci, cj):
     '''Returns all clauses that c'''
     clauses = []
-    for di in disCombine(OR, ci):
-        for dj in disCombine(OR, cj):
-            if di == negativeInside(dj) or negativeInside(di) == dj:
-                diNew = disCombine(OR, ci)
+    for di in dis_combine(OR, ci):
+        for dj in dis_combine(OR, cj):
+            if di == negative_inside(dj) or negative_inside(di) == dj:
+                diNew = dis_combine(OR, ci)
                 diNew.remove(di)
-                djNew = disCombine(OR, cj)
+                djNew = dis_combine(OR, cj)
                 djNew.remove(dj)
                 dNew = diNew + djNew
-                dNew = toUnique(dNew)
+                dNew = to_unique(dNew)
                 toAddD = combine(OR, dNew)
                 # Keep the literals in alphabetical order
                 sortClause(toAddD)
@@ -103,7 +103,7 @@ def plResolve(ci, cj):
     return clauses
 
 
-def negativeInside(s):
+def negative_inside(s):
     '''Move negation sign inside s'''
     if type(s) == str:
         return [NOT, s]
@@ -112,16 +112,16 @@ def negativeInside(s):
     elif s[0] == AND:
         tempRet = [OR]
         for element in s[1:]:
-            tempRet.append(negativeInside(element))
+            tempRet.append(negative_inside(element))
         return tempRet
     elif s[0] == OR:
         tempRet = [AND]
         for element in s[1:]:
-            tempRet.append(negativeInside(element))
+            tempRet.append(negative_inside(element))
         return tempRet
 
 
-def toUnique(clauses):
+def to_unique(clauses):
     '''Return a clauses list whose elements are unique'''
     if type(clauses) == str:
         return clauses
@@ -139,29 +139,9 @@ def toUnique(clauses):
     return retClauses
 
 
-def isSublistOf(l1, l2):
+def is_sublist_of(l1, l2):
     '''Check if l1 is sublist of l2'''
     for element in l1:
         if not element in l2:
             return False
     return True
-
-
-# if __name__ == "__main__":
-#     ''' Testing '''
-
-#     problem1 = [AND,
-#                 [OR, [NOT, 'A'], 'B'],
-#                 [OR, [NOT, 'C'], 'B'],
-#                 [OR, 'A', [NOT, 'B'], 'C'],
-#                 [NOT, 'B'],
-#                 ]
-#     alpha = [NOT, 'A']
-#     # alpha = 'A'
-
-#     kb = KnowledgeBase()
-#     kb.detailsTurn = True
-#     for cl in problem1[1:]:
-#         kb.tell(cl)
-
-#     print(plResolution(kb, alpha))
